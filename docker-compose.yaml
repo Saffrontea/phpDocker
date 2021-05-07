@@ -1,20 +1,23 @@
 version: '3'
 
 services:
-  mysql:
-    image: mysql:latest
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/mssql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 'PassW@rd'
+      ACCEPT_EULA: Y
+      SA_PASSWORD: 'PassW@rd'
+    ports:
+      - "1433:1433"
 
   phpmyadmin:
     depends_on:
-      - mysql
+      - mssql
     image: phpmyadmin/phpmyadmin
     environment:
-      PMA_HOST: mysql
+      PMA_HOST: mssql
     restart: always
     ports:
       - "8080:80"
@@ -27,7 +30,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - mysql
+      - mssql
 
 volumes:
   db_data: {}
